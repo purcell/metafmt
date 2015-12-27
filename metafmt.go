@@ -24,13 +24,14 @@ package main
 
 import (
 	"bytes"
-	"errors"
 	"flag"
 	"io"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+
+	"github.com/ungerik/go-dry"
 )
 
 //
@@ -170,6 +171,8 @@ var write = flag.Bool("write", false, "Write the file in place")
 // Entry point
 //
 
+type formatOp func(string, *formatter) error
+
 func main() {
 	// Flags
 	flag.Parse()
@@ -181,42 +184,73 @@ func main() {
 
 	// Format standard input, then stop
 	if len(args) == 1 && args[0] == "-" {
-		if err := formatStdin(); err != nil {
-			log.Fatalln(err)
-		}
-
+		formatStdin()
 		return
 	}
 
 	// Select mode of operation (format to file or standard output)
-	var formatterFunc func(string, *formatter) error
+	var op formatOp
 	if *write {
-		formatterFunc = formatWrite
+		op = formatWrite
 	} else {
-		formatterFunc = formatStdout
+		op = formatStdout
 	}
 
 	// Format files
-	for _, path := range args[1:] {
-		formatter := formatterForPath(path)
-		if formatter == nil {
-			continue
-		}
-
-		if err := formatterFunc(path, formatter); err != nil {
-			log.Fatalln(err)
+	for _, path := range args {
+		if dry.FileIsDir(path) {
+			formatDir(path, op)
+		} else {
+			formatFile(path, op)
 		}
 	}
 }
 
-func formatStdin() error {
+//
+// High level operations
+//
+
+var IgnoreDirs = []string{".git", ".hg", ".svn", "node_modules"}
+
+func formatDir(path string, op formatOp) {
+	filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+		if info.IsDir() && dry.StringListContains(IgnoreDirs, info.Name()) {
+			return filepath.SkipDir
+		}
+
+		if !info.IsDir() {
+			formatFile(path, op)
+		}
+
+		return nil
+	})
+}
+
+func formatFile(path string, op formatOp) {
+	formatter := formatterForPath(path)
+	if formatter == nil {
+		return
+	}
+
+	if err := op(path, formatter); err != nil {
+		log.Fatalln(err)
+	}
+}
+
+func formatStdin() {
 	formatter := formatterForEmacs()
 	if formatter == nil {
-		return errors.New("Must be given an Emacs major mode")
+		log.Fatalln("Must be given an Emacs major mode")
 	}
 
-	return formatChain(os.Stdout, os.Stdin, formatter.Commands)
+	if err := formatChain(os.Stdout, os.Stdin, formatter.Commands); err != nil {
+		log.Fatalln(err)
+	}
 }
+
+//
+// Low level operations
+//
 
 func formatWrite(path string, formatter *formatter) error {
 	file, err := os.OpenFile(path, os.O_RDWR, 0)
