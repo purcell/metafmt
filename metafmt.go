@@ -132,6 +132,33 @@ func init() {
 	}
 }
 
+func formatterForEmacs() *formatter {
+	if *emacs == "" {
+		return nil
+	}
+
+	formatter, ok := emacsToFormatter[*emacs]
+	if !ok {
+		return nil
+	}
+
+	return formatter
+}
+
+func formatterForPath(path string) *formatter {
+	ext := filepath.Ext(path)
+	if ext == "" {
+		return nil
+	}
+
+	fmt, ok := extToFormatter[ext]
+	if !ok {
+		return nil
+	}
+
+	return fmt
+}
+
 //
 // Flags
 //
@@ -182,20 +209,6 @@ func main() {
 	}
 }
 
-func formatterForPath(path string) *formatter {
-	ext := filepath.Ext(path)
-	if ext == "" {
-		return nil
-	}
-
-	fmt, ok := extToFormatter[ext]
-	if !ok {
-		return nil
-	}
-
-	return fmt
-}
-
 func formatStdin() error {
 	formatter := formatterForEmacs()
 	if formatter == nil {
@@ -203,19 +216,6 @@ func formatStdin() error {
 	}
 
 	return formatChain(os.Stdout, os.Stdin, formatter.Commands)
-}
-
-func formatterForEmacs() *formatter {
-	if *emacs == "" {
-		return nil
-	}
-
-	formatter, ok := emacsToFormatter[*emacs]
-	if !ok {
-		return nil
-	}
-
-	return formatter
 }
 
 func formatWrite(path string, formatter *formatter) error {
