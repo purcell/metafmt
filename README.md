@@ -6,6 +6,39 @@ the command line or integrated into an editor.
 It's opinionated, which means that you can't configure it, *this is by design*.
 
 
+## Installation
+
+`metafmt` is written in Go. Since there are no pre-built binaries (yet) you should install it by
+running:
+
+    go get https://github.com/lvillani/metafmt
+
+
+## Usage
+
+When used from the command line, `metafmt` will try to format the files given as
+arguments. When given a directory, `metafmt` will beautify all files recursively.
+
+Beautified code is printed on standard output. By passing the `-write` flag you can force
+`metafmt` to format files in-place instead.
+
+Formatters are chosen based on the file's extension. Files without extension are skipped.
+
+
+## Editor Integration
+
+### Emacs
+
+[metafmt.el](metafmt.el) contains a minor mode that you can enable per-buffer or globally. To
+integrate `metafmt` with Emacs, copy said file somewhere, load it and then enable either
+`metafmt-mode` or `global-metafmt-mode`:
+
+```elisp
+(load "~/.emacs.d/metafmt.el")
+(global-metafmt-mode t)
+```
+
+
 ## Supported Formatters
 
 **NOTE**: These have to be installed separately. If one of them isn't installed, `metafmt` will
