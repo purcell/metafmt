@@ -80,7 +80,7 @@ var formatters = []*formatter{
 	// JSON
 	{
 		Commands: [][]string{
-			[]string{"jsonlint", "-"},
+			[]string{"jsonlint", "--sort-keys", "-"},
 		},
 		EmacsMajorModes: []string{"json-mode"},
 		Extensions:      []string{".json"},
