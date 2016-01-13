@@ -1,4 +1,4 @@
-# Meta Formatter
+# metafmt
 
 `metafmt` is an opinionated front-end for various code beautifiers. It is meant to be used from
 the command line or integrated into an editor.
