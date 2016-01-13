@@ -11,7 +11,7 @@ It's opinionated, which means that you can't configure it, *this is by design*.
 `metafmt` is written in Go. Since there are no pre-built binaries (yet) you should install it by
 running:
 
-    go get https://github.com/lvillani/metafmt
+    go get github.com/lvillani/metafmt
 
 
 ## Usage
