@@ -25,6 +25,7 @@
 
 ;;; Code:
 
+;;;###autoload
 (define-minor-mode metafmt-mode
   "Enable format-on-save for all supported files through metafmt"
   :lighter " fmt"
@@ -32,9 +33,9 @@
       (add-hook 'before-save-hook 'metafmt-before-save t t)
     (remove-hook 'before-save-hook 'metafmt-before-save t)))
 
+;;;###autoload
 (define-globalized-minor-mode global-metafmt-mode metafmt-mode (lambda () (metafmt-mode t)))
 
-;;;###autoload
 (defun metafmt-before-save ()
   (let ((command `("metafmt" "-emacs" ,(symbol-name major-mode) "-"))
         (old-point (point))
@@ -50,7 +51,6 @@
           (set-window-start (get-buffer-window) old-window-start t))
         (kill-buffer tmp-buffer)))))
 
-;;;###autoload
 (defun metafmt-run-command (buf command)
   (apply #'call-process-region (point-min) (point-max) (car command) nil buf nil (cdr command)))
 
