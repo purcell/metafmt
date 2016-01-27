@@ -56,7 +56,7 @@ var formatters = []*formatter{
 	// CSS
 	{
 		Commands: [][]string{
-			[]string{"cssbeautify-bin", "--autosemicolon", "-f", "-"},
+			[]string{"cssfmt"},
 		},
 		EmacsMajorModes: []string{"css-mode"},
 		Extensions:      []string{".css"},

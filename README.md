@@ -45,7 +45,7 @@ integrate `metafmt` with Emacs, copy said file somewhere, load it and then enabl
 skip the file and do nothing.
 
 * C/C++: [clang-format](http://clang.llvm.org/docs/ClangFormat.html);
-* CSS: [cssbeautify]();
+* CSS: [cssfmt](https://github.com/morishitter/cssfmt);
 * Go: [goimports](https://godoc.org/golang.org/x/tools/cmd/goimports);
 * JavaScript: [semistandard-format](https://github.com/ricardofbarros/semistandard-format);
 * JSON: [jsonlint](https://github.com/zaach/jsonlint);
