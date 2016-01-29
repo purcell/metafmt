@@ -1,4 +1,4 @@
-;;; metafmt.el --- Emacs interface for metafmt
+;;; metafmt.el --- Run metafmt on buffers when saving them
 
 ;; Copyright (C) 2015 Lorenzo Villani
 ;;
